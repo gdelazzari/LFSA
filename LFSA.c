@@ -34,7 +34,7 @@ SENSOR_VTYPE low_average;
     
     [cfg_sensor_number] is the number of sensors in the array
     
-    [cfg_sensor_type] specifies the behavoir of the sensors, if the value is lower
+    [cfg_sensor_type] specifies the behavior of the sensors, if the value is lower
     when the line is black (SENSOR_BLACK_LOWER) or the opposite (SENSOR_BLACK_HIGHER)
 */
 void LFSA_configure(const LFSA_ITYPE cfg_sensor_number, const SENSOR_TYPE cfg_sensor_type)
@@ -63,7 +63,7 @@ LFSA_ITYPE LFSA_process(SENSOR_VTYPE* values, LFSA_PTYPE** result, LFSA_PTYPE* b
     
     SENSOR_VTYPE average_v = 0;
     
-    static SENSOR_VTYPE* delta;
+    static LFSA_STYPE* delta;
     SENSOR_VTYPE average_d = 0;
     
     static SENSOR_RESULT* analysis;
@@ -76,7 +76,7 @@ LFSA_ITYPE LFSA_process(SENSOR_VTYPE* values, LFSA_PTYPE** result, LFSA_PTYPE* b
     LFSA_ITYPE center;
     
     // Allocate memory for the variables (if needed)
-    if (!delta) delta = (SENSOR_VTYPE*) malloc(sizeof(SENSOR_VTYPE) * sensor_n);
+    if (!delta) delta = (LFSA_STYPE *) malloc(sizeof(LFSA_STYPE) * sensor_n);
     if (!analysis) analysis = (SENSOR_RESULT*) malloc(sizeof(SENSOR_RESULT) * sensor_n);
     if (!result_a) result_a = (LFSA_PTYPE*) malloc(sizeof(LFSA_PTYPE) * (sensor_n / 2 + (sensor_n % 2)));
     
@@ -87,12 +87,12 @@ LFSA_ITYPE LFSA_process(SENSOR_VTYPE* values, LFSA_PTYPE** result, LFSA_PTYPE* b
     for (i = 0; i < sensor_n; i++)
         average_v += values[i];
     average_v /= sensor_n;
-    
+
     // Calculate delta from average for every value | Calculate average absolute delta
     for (i = 0; i < sensor_n; i++)
         average_d += abs(delta[i] = values[i] - average_v);
     average_d /= sensor_n;
-    
+
     // Keep track of the average delta
     if (delta_average) delta_average = (delta_average * 2 + average_d) / 3; else delta_average = average_d;
     
@@ -111,18 +111,19 @@ LFSA_ITYPE LFSA_process(SENSOR_VTYPE* values, LFSA_PTYPE** result, LFSA_PTYPE* b
         return 0;
     }
     
-    // Analyse values
+    // Analyze values
     for (i = 0; i < sensor_n; i++)
     {
-        if (abs(delta[i]) > average_d)  // If the delta is enough big we found something, check if could be a line
-            analysis[i] = ((sensor_t == SENSOR_BLACK_LOWER && delta[i] < 0) | (sensor_t == SENSOR_BLACK_HIGHER && delta[i] > 0)) ? SENSOR_LINE : SENSOR_NOLINE;
-        else
-          analysis[i] = SENSOR_NOLINE;
-        
-        if (delta[i] > 0) if (high_average) high_average = (high_average + values[i]) / 2; else high_average = values[i];
-        if (delta[i] < 0) if (low_average) low_average = (low_average + values[i]) / 2; else low_average = values[i];
+    	analysis[i] = SENSOR_NOLINE;
+
+    	if ((SENSOR_VTYPE) abs(delta[i]) > average_d)  // If the delta is enough big we found something, check if could be a line
+        	if (((sensor_t == SENSOR_BLACK_LOWER) && (delta[i] < 0)) || ((sensor_t == SENSOR_BLACK_HIGHER) && (delta[i] > 0)))
+        		analysis[i] = SENSOR_LINE;
+
+        if (delta[i] > 0) { if (high_average) high_average = (high_average + values[i]) / 2; else high_average = values[i]; }
+        if (delta[i] < 0) { if (low_average) low_average = (low_average + values[i]) / 2; else low_average = values[i]; }
     }
-    
+
     // Calculate center position
     center = sensor_n / 2 + (sensor_n % 2);
     

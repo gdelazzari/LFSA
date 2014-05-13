@@ -32,30 +32,35 @@
     
     You can adjust them to save RAM memory or to have more precision
 */
-#define SENSOR_VTYPE        int         // Variable type for sensor values
-                                        // -> uint8_t for ADC up to 8bit
-                                        // -> uint16_t for ADC up to 16bit
-                                        // -> float for precision, scale is up to you
+#define SENSOR_VTYPE        unsigned int	// Variable type for sensor values
+                                        	// -> uint8_t for ADC up to 8bit
+                                        	// -> uint16_t for ADC up to 16bit
+                                        	// -> float for precision, scale is up to you
 
-#define LFSA_PTYPE          int         // Variable type for line position indication and percentages (aka. return type)
+#define LFSA_PTYPE          int				// Variable type for line position indication and percentages (aka. return type)
+											// Must be a signed variable type
                                         
-#define LFSA_ITYPE          int         // Variable type for general numbers
-                                        // (change to uint8_t or unsigned char if you don't have a lot of memory free)
+#define LFSA_ITYPE          unsigned int	// Variable type for general numbers
+                                        	// (change to uint8_t or unsigned char if you don't have a lot of memory free)
+
+#define LFSA_STYPE        	int				// Variable type for signed numbers, internally used by library
+											// Leave int or if memory constrained put short (char/int8_t) at your own risk,
+											// don't know how big is the data which goes there
 
 /*
     Used to represent the line sensors behavoir
 */
 typedef enum {
-    SENSOR_BLACK_LOWER,
-    SENSOR_BLACK_HIGHER
+    SENSOR_BLACK_LOWER = 0,
+    SENSOR_BLACK_HIGHER = 1
 } SENSOR_TYPE;
 
 /*
     Used to represent the analysed result of a single sensor (internally used, used should not care)
 */
 typedef enum {
-    SENSOR_LINE,
-    SENSOR_NOLINE
+	SENSOR_NOLINE = 0,
+    SENSOR_LINE = 1
 } SENSOR_RESULT;
 
 /*
@@ -81,3 +86,4 @@ LFSA_ITYPE LFSA_process(SENSOR_VTYPE* values, LFSA_PTYPE** result, LFSA_PTYPE* b
 
 
 #endif
+
