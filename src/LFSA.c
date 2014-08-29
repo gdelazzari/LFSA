@@ -1,17 +1,29 @@
 /*
-    -- LFSA Algorithm Library --
-    
-    Version 0.11
+    LFSA Algorithm Library
     
     This library lets you use my Line Following Sensor Algorithm to have a good output
     of how many lines and where them are in a reflective sensor array usually implemented
     in a line-following robot.
     
     Idea, algorithm and code by Giacomo De Lazzari
-    
     ITIS A. Rossi, Vicenza (Italy)
+    giacky98.mail@gmail.com
     
-    19/04/2014
+    Copyright (C) 2014
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License along
+    with this program; if not, write to the Free Software Foundation, Inc.,
+    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
 #include <math.h>
